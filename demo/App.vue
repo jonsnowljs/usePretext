@@ -4,6 +4,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watchEffect } from 'vue'
 import { usePretext, usePretextLines } from 'use-pretext'
 
 import DemoControls from './components/DemoControls.vue'
+import PageAccordion from './pages/PageAccordion.vue'
 import PageCanvas from './pages/PageCanvas.vue'
 import PageComposer from './pages/PageComposer.vue'
 import PageFeed from './pages/PageFeed.vue'
@@ -11,7 +12,7 @@ import PageManual from './pages/PageManual.vue'
 import PageOverview from './pages/PageOverview.vue'
 
 type PresetId = 'product' | 'multilingual' | 'poetry'
-type DemoPageId = 'overview' | 'feed' | 'composer' | 'manual' | 'canvas'
+type DemoPageId = 'overview' | 'feed' | 'composer' | 'manual' | 'canvas' | 'accordion'
 
 const COPY: Record<PresetId, string> = {
   product:
@@ -58,6 +59,7 @@ const PAGE_OPTIONS: Array<{ id: DemoPageId; label: string; blurb: string }> = [
   { id: 'composer', label: 'Composer', blurb: 'Drive autosize-like input shells.' },
   { id: 'manual', label: 'Manual Lines', blurb: 'Inspect the wrapped line output.' },
   { id: 'canvas', label: 'Canvas', blurb: 'Render text directly to a canvas.' },
+  { id: 'accordion', label: 'Accordion', blurb: 'Animate open panels from measured text height.' },
 ]
 
 function parsePageHash(hash: string): DemoPageId {
@@ -256,52 +258,53 @@ onBeforeUnmount(() => {
 
 <template>
   <main class="page-shell">
-    <aside class="sidebar">
-      <section class="hero card">
-        <p class="eyebrow">Pretext Demo</p>
-        <h1>Separate pages for each text-layout use case.</h1>
-        <p class="lede">
-          The controls stay shared, but each page isolates one pattern so it is easier to understand what Pretext is
-          doing.
-        </p>
-      </section>
+    <section class="hero card">
+      <p class="eyebrow">Pretext Demo</p>
+      <h1>Separate pages for each text-layout use case.</h1>
+      <p class="lede">
+        The controls stay shared, but each page isolates one pattern so it is easier to understand what Pretext is
+        doing.
+      </p>
+    </section>
 
-      <nav class="page-nav card">
-        <p class="section-label">Pages</p>
+    <nav class="page-tabs card" aria-label="Demo pages">
+      <div class="page-tabs__row" role="tablist">
         <button
           v-for="page in PAGE_OPTIONS"
           :key="page.id"
-          class="page-link"
-          :class="{ 'page-link--active': activePage === page.id }"
+          class="page-tab"
+          :class="{ 'page-tab--active': activePage === page.id }"
           type="button"
+          role="tab"
+          :aria-selected="activePage === page.id"
           @click="selectPage(page.id)"
         >
-          <strong>{{ page.label }}</strong>
-          <span>{{ page.blurb }}</span>
+          {{ page.label }}
         </button>
-      </nav>
+      </div>
+      <p class="page-tabs__blurb">{{ currentPage.blurb }}</p>
+    </nav>
 
-      <DemoControls
-        :body-text="bodyText"
-        :canvas-width="canvasWidth"
-        :composer-width="composerWidth"
-        :font-options="fontOptions"
-        :locale="locale"
-        :preset="preset"
-        :preset-options="PRESET_OPTIONS"
-        :selected-font="selectedFont"
-        :thread-width="threadWidth"
-        :use-pre-wrap="usePreWrap"
-        @update:body-text="bodyText = $event"
-        @update:canvas-width="canvasWidth = $event"
-        @update:composer-width="composerWidth = $event"
-        @update:locale="locale = $event"
-        @update:preset="applyPreset($event)"
-        @update:selected-font="selectedFont = $event"
-        @update:thread-width="threadWidth = $event"
-        @update:use-pre-wrap="usePreWrap = $event"
-      />
-    </aside>
+    <DemoControls
+      :body-text="bodyText"
+      :canvas-width="canvasWidth"
+      :composer-width="composerWidth"
+      :font-options="fontOptions"
+      :locale="locale"
+      :preset="preset"
+      :preset-options="PRESET_OPTIONS"
+      :selected-font="selectedFont"
+      :thread-width="threadWidth"
+      :use-pre-wrap="usePreWrap"
+      @update:body-text="bodyText = $event"
+      @update:canvas-width="canvasWidth = $event"
+      @update:composer-width="composerWidth = $event"
+      @update:locale="locale = $event"
+      @update:preset="applyPreset($event)"
+      @update:selected-font="selectedFont = $event"
+      @update:thread-width="threadWidth = $event"
+      @update:use-pre-wrap="usePreWrap = $event"
+    />
 
     <section class="content">
       <header class="content-header card">
@@ -368,12 +371,20 @@ onBeforeUnmount(() => {
       />
 
       <PageCanvas
-        v-else
+        v-else-if="activePage === 'canvas'"
         :canvas-height="canvasHeight.value"
         :canvas-inner-width="canvasInnerWidth.value"
         :canvas-width="canvasWidth"
         :line-count="canvasLayout.lineCount.value"
         :target="canvasTarget"
+      />
+
+      <PageAccordion
+        v-else
+        :body-text="bodyText"
+        :font-config="fontConfig"
+        :locale="locale"
+        :use-pre-wrap="usePreWrap"
       />
     </section>
   </main>

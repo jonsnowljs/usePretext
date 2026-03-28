@@ -29,67 +29,69 @@ defineEmits<{
 
 <template>
   <section class="controls card">
-    <div class="stack">
-      <span class="section-label">Content preset</span>
-      <div class="chip-row">
-        <button
-          v-for="option in presetOptions"
-          :key="option.id"
-          class="chip"
-          :class="{ 'chip--active': preset === option.id }"
-          type="button"
-          @click="$emit('update:preset', option.id)"
-        >
-          {{ option.label }}
-        </button>
+    <div class="controls-grid">
+      <div class="stack">
+        <span class="section-label">Content preset</span>
+        <div class="chip-row">
+          <button
+            v-for="option in presetOptions"
+            :key="option.id"
+            class="chip"
+            :class="{ 'chip--active': preset === option.id }"
+            type="button"
+            @click="$emit('update:preset', option.id)"
+          >
+            {{ option.label }}
+          </button>
+        </div>
       </div>
-    </div>
 
-    <div class="stack">
-      <span class="section-label">Font profile</span>
-      <div class="chip-row">
-        <button
-          v-for="option in fontOptions"
-          :key="option.id"
-          class="chip"
-          :class="{ 'chip--active': selectedFont === option.id }"
-          type="button"
-          @click="$emit('update:selected-font', option.id)"
-        >
-          {{ option.label }}
-        </button>
+      <div class="stack">
+        <span class="section-label">Font profile</span>
+        <div class="chip-row">
+          <button
+            v-for="option in fontOptions"
+            :key="option.id"
+            class="chip"
+            :class="{ 'chip--active': selectedFont === option.id }"
+            type="button"
+            @click="$emit('update:selected-font', option.id)"
+          >
+            {{ option.label }}
+          </button>
+        </div>
       </div>
+
+      <label class="field">
+        <span>Locale</span>
+        <select :value="locale" @change="$emit('update:locale', ($event.target as HTMLSelectElement).value)">
+          <option value="en">English</option>
+          <option value="ar">Arabic</option>
+          <option value="zh">Chinese</option>
+          <option value="ja">Japanese</option>
+        </select>
+      </label>
+
+      <label class="toggle">
+        <input
+          :checked="usePreWrap"
+          type="checkbox"
+          @change="$emit('update:use-pre-wrap', ($event.target as HTMLInputElement).checked)"
+        />
+        <span>Preserve tabs and line breaks</span>
+      </label>
     </div>
-
-    <label class="field">
-      <span>Locale</span>
-      <select :value="locale" @change="$emit('update:locale', ($event.target as HTMLSelectElement).value)">
-        <option value="en">English</option>
-        <option value="ar">Arabic</option>
-        <option value="zh">Chinese</option>
-        <option value="ja">Japanese</option>
-      </select>
-    </label>
-
-    <label class="toggle">
-      <input
-        :checked="usePreWrap"
-        type="checkbox"
-        @change="$emit('update:use-pre-wrap', ($event.target as HTMLInputElement).checked)"
-      />
-      <span>Preserve tabs and line breaks</span>
-    </label>
 
     <label class="field field--text">
       <span>Body copy</span>
       <textarea
         :value="bodyText"
-        rows="7"
+        rows="4"
         @input="$emit('update:body-text', ($event.target as HTMLTextAreaElement).value)"
       />
     </label>
 
-    <div class="slider-column">
+    <div class="slider-grid">
       <label class="field">
         <span>Manual width</span>
         <input

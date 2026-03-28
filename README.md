@@ -107,6 +107,55 @@ const layout = usePretextLines({
 const labels = computed(() => layout.lines.value.map((line) => line.text))
 ```
 
+## Example: smooth accordion animation
+
+Use `usePretext(...)` to compute the expanded panel height, then animate the wrapper to that number.
+
+```vue
+<script setup lang="ts">
+import { computed, ref } from 'vue'
+import { usePretext } from 'use-pretext'
+
+const isOpen = ref(false)
+const answerTarget = ref<HTMLElement | null>(null)
+const answer =
+  ref('Pretext can give you the wrapped text height first, so the accordion animates to a stable number.')
+
+const answerLayout = usePretext({
+  target: answerTarget,
+  text: answer,
+  lineHeight: 24,
+  font: {
+    size: '16px',
+    family: 'Inter',
+    weight: 500,
+  },
+})
+
+const panelHeight = computed(() => (isOpen.value ? answerLayout.height.value + 24 : 0))
+</script>
+
+<template>
+  <article class="accordion-item">
+    <button type="button" @click="isOpen = !isOpen">Why use Pretext for accordions?</button>
+
+    <div
+      class="accordion-panel"
+      :style="{ height: `${panelHeight}px`, overflow: 'hidden', transition: 'height 300ms ease' }"
+    >
+      <div
+        ref="answerTarget"
+        :style="{ paddingBottom: '24px', font: '500 16px/24px Inter', overflowWrap: 'anywhere' }"
+      >
+        {{ answer }}
+      </div>
+    </div>
+  </article>
+</template>
+```
+
+This avoids reading `scrollHeight` after each toggle and keeps the target animation height reactive to width changes.
+
 ## API
 
 ### `usePretext(options)`
@@ -153,6 +202,7 @@ The repo includes a Vite demo under `demo/` with separate pages for:
 - autosize-style composer layout
 - manual line inspection
 - canvas rendering
+- accordion height animation
 
 Run it with:
 

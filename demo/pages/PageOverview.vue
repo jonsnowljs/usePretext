@@ -1,5 +1,5 @@
 <script setup lang="ts">
-type DemoPageId = 'overview' | 'feed' | 'composer' | 'manual' | 'canvas'
+type DemoPageId = 'overview' | 'feed' | 'composer' | 'manual' | 'canvas' | 'accordion'
 
 defineProps<{
   canvasLineCount: number
@@ -50,6 +50,13 @@ defineEmits<{
       <h3>{{ canvasLineCount }} drawn lines</h3>
       <p>Use line output directly in a canvas draw pass with deterministic positioning.</p>
       <button class="jump-button" type="button" @click="$emit('openPage', 'canvas')">Open page</button>
+    </article>
+
+    <article class="card quick-card">
+      <p class="card__label">Accordion</p>
+      <h3>Smooth height animation</h3>
+      <p>Animate FAQ panels from measured text height instead of reading <code>scrollHeight</code> on toggle.</p>
+      <button class="jump-button" type="button" @click="$emit('openPage', 'accordion')">Open page</button>
     </article>
   </section>
 </template>

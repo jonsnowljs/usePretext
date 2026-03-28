@@ -6,15 +6,21 @@
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.js",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "engines": {
+    "node": ">=18"
+  },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     }
   },
   "peerDependencies": {
@@ -33,7 +39,9 @@
   "scripts": {
     "build": "tsup",
     "check": "tsc --noEmit",
+    "clean": "rm -rf dist",
     "demo": "vite",
+    "prepublishOnly": "npm run test && npm run check && npm run build",
     "test": "vitest run"
   },
   "keywords": [
@@ -43,6 +51,7 @@
     "pretext",
     "text-layout",
     "text-measurement",
-    "vite"
+    "canvas",
+    "line-break"
   ]
 }

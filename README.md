@@ -2,6 +2,12 @@
 
 Vue 3 composables for [`@chenglou/pretext`](https://github.com/chenglou/pretext).
 
+This package wraps Pretext with Vue 3 composables for:
+
+- measuring multiline text height from a reactive width or DOM target
+- reading wrapped line output for custom renderers
+- using the same text layout logic in DOM and canvas flows
+
 ## Install
 
 ```bash
@@ -77,6 +83,8 @@ It shows:
 - `usePretext(...)` with a real observed DOM container
 - `usePretextLines(...)` with explicit width control and per-line output
 
+Each use case is split into its own page in the demo so you can inspect them independently.
+
 ## Options
 
 - `text`: `string | Ref<string> | () => string`
@@ -92,3 +100,37 @@ It shows:
 
 - If both `width` and `target` are provided, `width` wins.
 - `locale` is global inside Pretext. Changing it clears Pretext's shared cache.
+
+## Publishing
+
+This repo is set up to be published as an npm package.
+
+Before publishing:
+
+1. Confirm that the package name `use-pretext` is available on npm, or change `"name"` in [package.json](/Users/jiasheng/Projects/use-pretext/package.json) to a scoped name such as `@your-scope/use-pretext`.
+2. Install dependencies and run:
+
+```bash
+npm install
+npm run test
+npm run check
+npm run build
+```
+
+3. Log in to npm:
+
+```bash
+npm login
+```
+
+4. Publish:
+
+```bash
+npm publish
+```
+
+If you switch to a scoped package name and want it public, publish with:
+
+```bash
+npm publish --access public
+```
